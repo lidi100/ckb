@@ -38,7 +38,11 @@ if [ "${REL_PKG#*.}" = "tar.gz" ]; then
 else
   zip -r $PKG_NAME.zip $PKG_NAME
 fi
-if [ -n "${GPG_SIGNER:-}" ]; then
+if [ "$REL_QINIU" = "true" ]; then
+  qshell account "$QINIU_ACCESS_KEY" "$QINIU_SECRET_KEY" ckb
+  qshell rput ckb-bin "$ARCHIVE_NAME" "$ARCHIVE_NAME"
+  echo "uploaded $ARCHIVE_NAME"
+elif [ -n "${GPG_SIGNER:-}" ]; then
   gpg -u "$GPG_SIGNER" -ab "$ARCHIVE_NAME"
 fi
 popd
